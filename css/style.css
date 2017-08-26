@@ -1,0 +1,78 @@
+.background {
+    height: 100vh;
+    background: rgba(204, 200, 189, 0.9);
+    display: flex;
+    flex-direction: column;
+}
+
+.box-top {
+    padding: 60px 60px 60px 60px;
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+}
+
+.box-bottom {
+    padding: 0 60px 60px 60px;
+}
+
+.name {
+    font-weight: bold;
+    font-size: 20px;
+    letter-spacing: 1px;
+}
+
+.name-sub {
+    font-size: 20px;
+    white-space: nowrap;
+    margin-right: 40px;
+}
+
+.name-sub:last-of-type {
+    margin-right: 0;
+
+}
+
+.ear-box {
+    height: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.state-box {
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 5px 5px 5px 5px;
+    width: 60px;
+    height: 60px;
+}
+
+.sep-box {
+    height: 2px;
+    width: 60px;
+    background-color: rgba(255, 255, 255, 0.3);
+}
+
+.state-box-1 {
+}
+
+.state-box-2 {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+
+.container-1 {
+    display: flex;
+    align-items: center;
+
+}
+
+.left-ear {
+    border-radius: 4px 0 0 4px;
+}
+
+.right-ear {
+    border-radius: 0 4px 4px 0;
+}
+
+
