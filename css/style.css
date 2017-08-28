@@ -1,6 +1,6 @@
 .background {
     height: 100vh;
-    background: rgba(204, 200, 189, 0.9);
+    background: rgba(251,251,251,0);
     display: flex;
     flex-direction: column;
 }
@@ -11,6 +11,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    height: 100%;
 
 }
 
@@ -36,47 +37,62 @@
 }
 
 .ear-box {
-    height: 6px;
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    height: 3px;
+    border: 1px solid rgba(55, 71, 79, 0.2);
 }
 
 .shadow {
-    box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 1px 5px 0 rgba(0,0,0,0.12), 0 3px 1px -2px rgba(0,0,0,0.2);
+    box-shadow: 0 2px 2px 0 rgba(250,250,250,0.14), 0 1px 5px 0 rgba(250,250,250,0.12), 0 3px 4px -2px rgba(150,150,150,0.2);
 }
 
 .state-box {
-    border: 2px solid rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(155, 171, 179, 0.2);
     border-radius: 5px 5px 5px 5px;
     width: 60px;
     height: 60px;
 }
 
 .sep-box {
-    height: 2px;
+    height: 1px;
     width: 40px;
-    background-color: rgba(255, 255, 255, 0.2);
+    background-color: rgba(155, 171, 179, 0.2);
 }
+
+.sep-box-short {
+    height: 1px;
+    width: 10px;
+    background-color: rgba(155, 171, 179, 0.2);
+}
+
 
 .state-box-1 {
 }
 
 .state-box-2 {
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(251, 251, 255, 1);
+   
 }
 
-
 .container-1 {
+    padding-top: 60px;
+    padding-left: 120px;
+    display: flex;
+    align-items: center;
+}
+
+.container-2 {
     display: flex;
     align-items: center;
 
 }
 
+
 .left-ear {
-    border-radius: 4px 0 0 4px;
+    border-radius: 2px 0 0 2px;
 }
 
 .right-ear {
-    border-radius: 0 4px 4px 0;
+    border-radius: 0 2px 2px 0;
 }
 
 
