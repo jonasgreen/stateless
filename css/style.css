@@ -29,6 +29,7 @@ a{}
 .title {
     font-weight: bold;
     letter-spacing: 1px;
+    opacity: 1;
 }
 
 .subtitle {
