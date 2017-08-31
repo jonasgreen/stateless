@@ -1,39 +1,39 @@
+a{}
+
 .background {
     height: 100vh;
-    background: rgba(251,251,251,0);
+    background: rgba(251, 251, 251, 0);
     display: flex;
     flex-direction: column;
 }
 
 .box-top {
-    padding: 60px 60px 60px 60px;
+    padding: 50px;
     flex-grow: 1;
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100%;
-
 }
 
 .box-bottom {
-    padding: 0 60px 60px 60px;
+    padding: 0 50px 40px;
+    display: flex;
+    justify-content: space-between;
+    font-size: 20px;
+    align-items: flex-end;
+    flex-wrap: wrap;
 }
 
-.name {
+
+
+.title {
     font-weight: bold;
-    font-size: 20px;
     letter-spacing: 1px;
 }
 
-.name-sub {
-    font-size: 20px;
+.subtitle {
+    display: flex;
     white-space: nowrap;
-    margin-right: 40px;
-}
-
-.name-sub:last-of-type {
-    margin-right: 0;
-
 }
 
 .ear-box {
@@ -42,7 +42,7 @@
 }
 
 .shadow {
-    box-shadow: 0 2px 2px 0 rgba(250,250,250,0.14), 0 1px 5px 0 rgba(250,250,250,0.12), 0 3px 4px -2px rgba(150,150,150,0.2);
+    box-shadow: 0 2px 2px 0 rgba(250, 250, 250, 0.14), 0 1px 5px 0 rgba(250, 250, 250, 0.12), 0 3px 4px -2px rgba(150, 150, 150, 0.2);
 }
 
 .state-box {
@@ -64,28 +64,18 @@
     background-color: rgba(155, 171, 179, 0.2);
 }
 
-
 .state-box-1 {
 }
 
 .state-box-2 {
     background: rgba(251, 251, 255, 1);
-
-}
-
-.container-1 {
-    padding-top: 60px;
-    padding-left: 120px;
+    transform: rotateX(0deg);
+    transition: transform 1.5s ease-out;
+    font-size: 48px;
     display: flex;
     align-items: center;
+    justify-content: center;
 }
-
-.container-2 {
-    display: flex;
-    align-items: center;
-
-}
-
 
 .left-ear {
     border-radius: 2px 0 0 2px;
