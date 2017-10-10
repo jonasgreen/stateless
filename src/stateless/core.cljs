@@ -12,7 +12,7 @@
     (fn[s]
       [application/render @s]))
 
-(defn main []
+(defn ^:export main []
   (enable-console-print!)
   (r/render [render state/state] (js/document.getElementById "application"))
 

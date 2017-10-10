@@ -41,7 +41,7 @@
                                        :source-map    "resources/public/js/compiled/deploy.js.map"
                                        :language-in   :ecmascript5 ;; Mute warnings re: promesa outputting non-ES3 compliant javascript
                                        :language-out  :ecmascript5
-                                       :optimizations :simple}}
+                                       :optimizations :advanced}}
 
                        {:id           "test"
                         :source-paths ["test"]
