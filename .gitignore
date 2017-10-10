@@ -1,2 +1,47 @@
+*jar
+classes
+deb/DEBIAN/control
+figwheel_server.log
+lib
+out
+pom.xml
+target
 *.DS_Store
+
+# --- generated js ---
+app.js
 resources/public/js/compiled
+resources/private/js/compiled
+
+# --- scss and css -----
+resources/public/css/**/style.css
+**/.sass-cache
+resources/scss/**/*.css
+**/*.css.map
+
+
+# --- repl ---
+/.repl/**
+.nrepl-port
+.cljs_rhino_repl*
+
+
+# --- lein ---
+.lein-deps-sum
+.lein-env
+.lein-failures
+.lein-plugins/
+.lein-repl-history
+
+
+# --- editor ----
+.idea
+*.iml
+
+
+/bin/
+.classpath
+.project
+.settings
+resources/test/js
+
