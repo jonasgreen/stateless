@@ -1,4 +1,4 @@
-(ns stateless.ui.contact-tab)
+(ns stateless.ui.contact-content)
 
 
 (defn render [])

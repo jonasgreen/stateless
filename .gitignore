@@ -10,8 +10,8 @@ target
 
 # --- generated js ---
 app.js
-resources/public/js/compiled
-resources/private/js/compiled
+resources/public/js/compiled/**
+resources/private/js/compiled/**
 
 # --- scss and css -----
 resources/public/css/**/style.css

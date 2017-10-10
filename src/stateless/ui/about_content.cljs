@@ -1,4 +1,4 @@
-(ns stateless.ui.about-tab)
+(ns stateless.ui.about-content)
 
 
 (defn render []

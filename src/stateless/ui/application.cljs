@@ -2,8 +2,8 @@
   (:require [reagent.core :as r]
             [stateless.ui.styles :as s]
             [stateless.state :as state]
-            [stateless.ui.contact-tab :as contact-tab]
-            [stateless.ui.about-tab :as about-tab]))
+            [stateless.ui.contact-content :as contact-tab]
+            [stateless.ui.about_tab :as about-tab]))
 
 ;------------
 ; menu-items
@@ -28,12 +28,40 @@
 ; page-render
 ;--------------
 
+
+(defn menu []
+  [:div {:style {:padding "0 50px 40px"
+                 :display :flex
+                 :justify-content :space-between
+                 :font-size 20
+                 :background :red
+                 :align-items :flex-end
+                 :flex-wrap :wrap}}])
+
+
+(defn content []
+  [:div {:style {:padding         50
+                 :flex-grow       1
+                 :background :blue
+                 :display         :flex
+                 :justify-content :center
+                 :align-items     :center}}
+
+
+   ]
+  )
+
+
 (defn render [_]
   (let [local-state (r/atom {})]
     (fn [state]
       (println "RENDER APP")
-      [:div
-       [about-tab/render]]
+      [:div {:style {:height "100vh"
+                     :width "100vw"
+                     :display        :flex
+                     :flex-direction :column}}
+       [content]
+       [menu]]
 
       #_(fn [ctx]
           [:div {:style s/tournament-page-style}

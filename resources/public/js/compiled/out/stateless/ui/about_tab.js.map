@@ -1,1 +1,0 @@
-{"version":3,"file":"\/Users\/jonasgreen\/workspace\/stateless\/resources\/public\/js\/compiled\/out\/stateless\/ui\/about_tab.js","sources":["about_tab.cljs?rel=1507562209085"],"lineCount":10,"mappings":";AAAA;;AAGA,gCAAA,hCAAMA;AAAN,AACE,4BAAA,5BAACC;;AADH,0FAAA,mDAAA","names":["stateless.ui.about-tab\/render","cljs.core\/println"]}
