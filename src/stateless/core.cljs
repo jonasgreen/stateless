@@ -14,7 +14,7 @@
 
 (defn ^:export main []
   (enable-console-print!)
-  (r/render [render state/state] (js/document.getElementById "application"))
+  (r/render [render state/state]  (js/document.getElementById "application"))
 
   (airboss/load-state-viewer state/state)
   (airboss/load-design-viewer))
