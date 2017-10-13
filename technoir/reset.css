@@ -1,0 +1,51 @@
+@font-face {
+    font-family: "menlo";
+    src: url("Menlo-Regular.ttf");
+}
+
+
+* {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+
+
+
+html {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    color: rgba(51, 51, 51, 1);
+    -webkit-font-smoothing: antialiased;
+    height: 100%;
+    line-height: 1.5;
+}
+
+body, textarea {
+    font-family: "menlo";
+    font-size: 14px;
+}
+
+a {
+    color: rgba(33, 150, 243, 1);
+    text-decoration: none;
+    transition: color 0.1s linear;
+}
+
+a:active {
+    outline: none;
+    color: rgba(25, 118, 210, 1);
+}
+
+a:focus {
+    outline: none;
+    color: rgba(25, 118, 210, 1);
+}
+
+a:hover {
+    color: rgba(25, 118, 210, 1);
+}
