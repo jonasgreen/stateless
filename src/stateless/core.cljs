@@ -9,12 +9,17 @@
 
 
 (defn render [s]
-    (fn[s]
-      [application/render @s]))
+  (fn [s]
+    [application/render @s]))
 
 (defn ^:export main []
   (enable-console-print!)
-  (r/render [render state/state]  (js/document.getElementById "application"))
+
+  (println "innerwidth: " (aget js/window "innerWidth"))
+  (println "screenwidth: " (aget js/screen "width"))
+
+
+  (r/render [render state/state] (js/document.getElementById "application"))
 
   (airboss/load-state-viewer state/state)
   (airboss/load-design-viewer))
