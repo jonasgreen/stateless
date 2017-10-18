@@ -29,7 +29,7 @@
 ; page-render
 ;--------------
 
-(defn menu-content-style {:padding         "0 50px 40px"
+(def menu-content-style {:padding         "0 50px 40px"
                           :display         :flex
                           :justify-content :space-between
                           :font-size       20

@@ -50,6 +50,7 @@
 
                   [:div {:style {:display :flex :padding 80 :padding-top 60 :font-size 14 :color "rgba(73, 78, 84, 1)"}}
                    [:div {:style {:display :flex :justify-content :space-between :align-items :center}}
+
                     [:span {:style {:padding 2 :margin-right 40 :color "rgba(174, 182, 187, 1)" :border-bottom "1px solid rgba(174, 182, 187, 1)"}} "ABOUT"]
                     [:span {:style {:margin-right 40}} "CONTACT"] [:span "BAR"]]
 
