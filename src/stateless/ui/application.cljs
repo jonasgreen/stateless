@@ -11,10 +11,6 @@
 
 
 
-
-
-
-
 (defn content []
   [:div {:style {:padding         50
                  :flex-grow       1
@@ -27,87 +23,112 @@
 
 
 (defn render [_]
-  (let [menu-clicked (r/atom false)]
-    (fn [state] [:div {:style {:height          :100vh
-                               :width           :100vw
-                               :display         :flex
-                               :flex-direction  :column
-                               :align-items     :center
-                               :justify-content :center
-                               }}
+  (let [menu-clicked (r/atom false)
+        text (r/atom {:section {:words "Dette er et forsøg på at lave noget sjovt text som kan ændre sig på mange måder."}})
 
-                 [:img {:src   "img/the-ocean.png"
-                        :style {:height   :100vh
-                                :width    :100vw
-                                :opacity  0.17
-                                :position :fixed
-                                :top      0
-                                :left     0
-                                :z-index  -1}}]
+        ]
+    (fn [state]
+      (style/style-node (dom/getElement "application-background") {:background (if @menu-clicked "rgba(11, 11, 11, 1)" "rgba(11, 11, 11, 1)")})
 
-                 ;top
-                 [:div {:style {:flex-grow 2 :width :100%}}
+      [:div {:style {:height          :100vh
+                     :width           :100vw
+                     :display         :flex
+                     :flex-direction  :column
+                     :align-items     :center
+                     :justify-content :center}}
 
-                  [:div {:style {:display :flex :padding 80 :padding-top 60 :font-size 12 :color "rgba(73, 78, 84, 1)"}}
-                   [:div {:style {:display :flex :justify-content :space-between :align-items :center}}
+       [:img {:src   "img/the-ocean.png"
+              :style {:height     :100vh
+                      :width      :100vw
+                      :opacity    (if @menu-clicked 0.05 0.17)
+                      :position   :fixed
+                      :top        0
+                      :z-index    -1
+                      :transition "opacity 0.3s ease-out"
+                      }}]
 
-                    [:span {:style {:padding 2 :margin-right 40 :color "rgba(174, 182, 187, 1)" :border-bottom "1px solid rgba(174, 182, 187, 1)"}} "ABOUT"]
-                    [:span {:style {:margin-right 40}} "CONTACT"] [:span "BAR"]]
+       ;top
+       [:div {:style {:flex-grow 2 :width :100%}}
+        [:div {:style {:display :flex :padding 80 :padding-top 60 :font-size 14 :color "rgba(73, 78, 84, 1)"}}
+         [:div {:style {:display :flex :justify-content :space-between :align-items :center}}
 
-                   ]
+          [:span {:on-click (fn [] (println "click") (swap! menu-clicked not))
+                  :style    (merge {:padding      2
+                                    :margin-right 40
+                                    :letter-spacing 1.5}
 
-                  ]
+                                   (when @menu-clicked {;:border-bottom "1px solid rgba(174, 182, 187, 1)"
+                                                        :color "rgba(174, 182, 187, 1)"
+                                                        }))
 
-                 ;bottom
-                 [:div {:style {:flex-grow  (if @menu-clicked 0 1)
-                                :width :100%
-                                :display         :flex
-                                :flex-direction  :column
-                                :transition "flex-grow 0.3s ease-out"
-                                :justify-content :center
-                                :align-items     :center}}
+                  } "ABOUT"]
+          [:span {:style {:margin-right 40 :letter-spacing 1.5}} "CONTACT"] [:span {:style {:letter-spacing 1.5}}"BAR"]]]
 
-                  [:div {:style {:height (if @menu-clicked 0 80)
-                                 :opacity (if @menu-clicked 0 1)
-                                 :transition "opacity 0.3s ease-out, height 0.3s ease-out"
-                                 }}
-                   ;title
-                   [:div {:on-click (fn[] (println "click") (swap! menu-clicked not))
-                          :style {:font-size       (if @menu-clicked 18 24)
-                                  :color           "rgba(174, 182, 187, 1)"
-                                  :display         :flex
-                                  :line-height     1.5
-                                  :transition "font-size 0.3s ease-out"
-                                  :justify-content :space-between}}
-                    [:span "S"] [:span "T"] [:span "A"] [:span "T"] [:span "E"] [:span "L"] [:span "E"] [:span "S"] [:span "S"]]
+        [:div {:style {:padding-left  80
+                       :padding-right 80
+                       :font-size     14
+                       :color         "rgba(174, 182, 187, 0.8)"
+                       :opacity       (if @menu-clicked 1 0)
+                       :transition    "opacity 0.3s linear"
+                       }}
+         [:div {:style {}} "Dette er et lille firma, som ikke kan finde ud af noget. Du skal aldrig hyre os."]
+         [:div {:style {}}
+          "Forstod du hvad jeg sagde? Ingenting som vi rører ved kommer nogen sinde til at virke."
+          ]
+
+         ]
+
+        ]
+
+       ;bottom
+       [:div {:style {:flex-grow       (if @menu-clicked 0 1)
+                      :width           :100%
+                      :display         :flex
+                      :flex-direction  :column
+                      :transition      "flex-grow 0.3s ease-out"
+                      :justify-content :center
+                      :align-items     :center}}
+
+        [:div {:style {:height     (if @menu-clicked 0 80)
+                       :opacity    (if @menu-clicked 0 1)
+                       :transition "opacity 0.3s ease-out, height 0.3s ease-out"
+                       }}
+         ;title
+         [:div {:style {:font-size       (if @menu-clicked 18 24)
+                        :color           "rgba(174, 182, 187, 1)"
+                        :display         :flex
+                        :line-height     1.5
+                        :transition      "font-size 0.3s ease-out"
+                        :justify-content :space-between}}
+          [:span "S"] [:span "T"] [:span "A"] [:span "T"] [:span "E"] [:span "L"] [:span "E"] [:span "S"] [:span "S"]]
 
 
-                   ;sub-title
-                   [:div {:style {:font-size       (if @menu-clicked 12 14)
-                                  :color           "rgba(174, 182, 187, 1)"
-                                  :display         :flex
-                                  :justify-content :space-between
-                                  :padding-bottom  30
-                                  :padding-left    1
-                                  :transition "font-size 0.3s ease-out"
+         ;sub-title
+         [:div {:style {:font-size       (if @menu-clicked 12 14)
+                        :color           "rgba(174, 182, 187, 1)"
+                        :display         :flex
+                        :justify-content :space-between
+                        :padding-bottom  30
+                        :padding-left    1
+                        :transition      "font-size 0.3s ease-out"
 
-                                  }} "Software Development"]]
+                        }} "Software Development"]]
 
 
-                  [:div {:style {:border-bottom-width 1
-                                 :border-bottom-style :solid
-                                 :border-bottom-color (if @menu-clicked "rgba(73, 78, 84, 0.2)" "transparent")
-                                 :width (if @menu-clicked :100% 0)
-                                 :height 0
-                                 :transition "all 0.3s ease-out"}}]
-                  ;contact info
-                  [:div {:style {:padding 8
-                                 :min-height 20
-                                 :display         :flex
-                                 ;:justify-content :center
-                                 :align-items     :center}}
-                   [:div {:style {:font-size (if @menu-clicked 12 14)
-                                  :color     (if @menu-clicked "rgba(73, 78, 84, 1)" "rgba(73, 78, 84, 1)")
-                                  :transition "all 0.3s ease-out"
-                                  }}
-                    "Jonas Green | jg@stateless.dk | +45 2149 7961"]]]])))
+        [:div {:style {:border-bottom-width 0               ; only border on scroll
+                       :border-bottom-style :solid
+                       :border-bottom-color (if @menu-clicked "rgba(73, 78, 84, 0.2)" "transparent")
+                       :width               (if @menu-clicked :100% 0)
+                       :height              0
+                       :transition          "all 0.3s ease-out"}}]
+        ;contact info
+        [:div {:style {:padding     8
+                       :min-height  40
+                       :display     :flex
+                       ;:justify-content :center
+                       :align-items :center}}
+         [:div {:style {:font-size  (if @menu-clicked 12 14)
+                        :color      (if @menu-clicked "rgba(73, 78, 84, 1)" "rgba(73, 78, 84, 1)")
+                        :transition "all 0.3s ease-out"
+                        }}
+          "Jonas Green | jg@stateless.dk | +45 2149 7961"]]]])))
