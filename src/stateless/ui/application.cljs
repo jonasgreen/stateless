@@ -44,7 +44,7 @@
                       :position   :fixed
                       :top        0
                       :z-index    -1
-                      :transition "opacity 0.3s ease-out"
+                      :transition "opacity 1.5s ease-out"
                       }}]
 
        ;top
@@ -75,6 +75,9 @@
          [:div {:style {}}
           "Forstod du hvad jeg sagde? Ingenting som vi rører ved kommer nogen sinde til at virke."
           ]
+
+
+         ;IDE - klikke på et bogstav - så flyver det væk....
 
          ]
 
