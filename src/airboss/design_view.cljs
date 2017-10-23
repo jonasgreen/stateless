@@ -22,7 +22,7 @@
   (merge text-style {:font-size 10
                      :position  :absolute}))
 
-(def design-view-style {:position    :absolute
+(def design-view-style {:position    :fixed
                         :will-change :transform
                         :background  "rgba(0,0,0,0.4)"
                         :z-index     200000
@@ -224,7 +224,7 @@
                                  [:div {:style design-view-style}
 
                                   ;svg
-                                  [:svg {:style {} :width "100%" :height "100%"}
+                                  [:svg {:style {} :width "100vw" :height "100vh"}
                                    [intersection-layer points "white" dimensions]
                                    [triangle-hubs dimensions]
                                    [handles-layer points focus-id]]
