@@ -1,0 +1,19 @@
+.spawn-enter {
+    opacity: 0.01;
+    left: 0;
+}
+
+.spawn-enter.spawn-enter-active {
+    opacity: 1;
+    left: 0;
+    transition: opacity 700ms ease-in, left 700ms ease-in;
+}
+
+.spawn-leave {
+    opacity: 1;
+}
+
+.spawn-leave.spawn-leave-active {
+    opacity: 0.01;
+    transition: all 700ms ease-in;
+}

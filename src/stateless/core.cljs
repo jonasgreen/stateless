@@ -2,6 +2,7 @@
   (:require [reagent.core :as r]
             [airboss.core :as airboss]
             [stateless.ui.application :as application]
+            [stateless.ui.transition-group :as tg]
             [stateless.state :as state]))
 
 (defn on-js-reload []
@@ -10,7 +11,8 @@
 
 (defn render [s]
   (fn [s]
-    [application/render @s]))
+    [tg/render @s]
+    #_[application/render @s]))
 
 (defn ^:export main []
   (enable-console-print!)

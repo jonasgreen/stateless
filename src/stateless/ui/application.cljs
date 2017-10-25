@@ -9,6 +9,8 @@
             [goog.dom :as dom]))
 
 
+(def tg
+  (r/adapt-react-class js/React.addons.TransitionGroup))
 
 
 (defn content []
@@ -21,12 +23,30 @@
 
 
 
+(defn render-char [c]
+  (let [c1 (r/create-class {:component-will-receive-props (fn [this new-argv])
+                            :component-did-mount          (fn [this] (println c " did mount "))
+                            :component-did-update         (fn [this old-argv])
+                            :component-will-unmount       (fn [this])
+                            :reagent-render               (fn [{:keys [letter left top]}]
+                                                            [:div {:style {:position :fixed
+                                                                           :top      top
+                                                                           :left     left
+                                                                           ;:transition "left 0.3s linear, top 0.3s linear"
+
+                                                                           }} letter])}
+                           )]
+    (aset c1 "componentWillEnter" #(println "EEEE"))
+    c1
+
+    ))
+
 
 (defn render [_]
   (let [menu-clicked (r/atom false)
-        text (r/atom {:section {:words "Dette er et forsøg på at lave noget sjovt text som kan ændre sig på mange måder."}})
-
-        ]
+        text (r/atom [{:id (gensym) :letter "A" :left 0 :top 0}
+                      {:id (gensym) :letter "B" :left 20 :top 20}
+                      {:id (gensym) :letter "C" :left 30 :top 30}])]
     (fn [state]
       (style/style-node (dom/getElement "application-background") {:background (if @menu-clicked "rgba(11, 11, 11, 1)" "rgba(11, 11, 11, 1)")})
 
@@ -52,9 +72,15 @@
         [:div {:style {:display :flex :padding 80 :padding-top 60 :font-size 14 :color "rgba(73, 78, 84, 1)"}}
          [:div {:style {:display :flex :justify-content :space-between :align-items :center}}
 
-          [:span {:on-click (fn [] (println "click") (swap! menu-clicked not))
-                  :style    (merge {:padding      2
-                                    :margin-right 40
+          [:span {:on-click (fn [] (swap! menu-clicked not)
+                              (swap! text (fn [v]
+                                            (-> (seq v)
+                                                (conj {:id (gensym) :letter "A" :left 0 :top 0})
+                                                ((fn [a] (mapv #(-> % (assoc :left (rand-int 200)) (assoc :top (rand-int 200))) a)))))))
+
+
+                  :style    (merge {:padding        2
+                                    :margin-right   40
                                     :letter-spacing 1.5}
 
                                    (when @menu-clicked {;:border-bottom "1px solid rgba(174, 182, 187, 1)"
@@ -62,24 +88,28 @@
                                                         }))
 
                   } "ABOUT"]
-          [:span {:style {:margin-right 40 :letter-spacing 1.5}} "CONTACT"] [:span {:style {:letter-spacing 1.5}}"BAR"]]]
+          [:span {:style {:margin-right 40 :letter-spacing 1.5}} "CONTACT"] [:span {:style {:letter-spacing 1.5}} "BAR"]]]
 
         [:div {:style {:padding-left  80
                        :padding-right 80
                        :font-size     14
+                       :position      :relative
                        :color         "rgba(174, 182, 187, 0.8)"
-                       :opacity       (if @menu-clicked 1 0)
+                       ;:opacity       (if @menu-clicked 1 0)
                        :transition    "opacity 0.3s linear"
+                       :background    :blue
                        }}
-         [:div {:style {}} "Dette er et lille firma, som ikke kan finde ud af noget. Du skal aldrig hyre os."]
-         [:div {:style {}}
-          "Forstod du hvad jeg sagde? Ingenting som vi rører ved kommer nogen sinde til at virke."
-          ]
 
 
-         ;IDE - klikke på et bogstav - så flyver det væk....
+         [tg {:transitionName         "spawn"
+              :transitionEnterTimeout 700
+              :transitionLeaveTimeout 700
+              } (map-indexed (fn [i c] ^{:key (:id c)} [render-char c]) @text)
 
-         ]
+
+          ;IDE - klikke på et bogstav - så flyver det væk....
+
+          ]]
 
         ]
 

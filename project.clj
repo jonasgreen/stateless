@@ -3,8 +3,11 @@
   :dependencies [[org.clojure/clojure "1.8.0"]
                  [org.clojure/clojurescript "1.9.946"]
                  [noencore "0.3.3"]
-                 [reagent "0.7.0"]
-                 [reagent-utils "0.2.1"]]
+                 [cljsjs/react-with-addons "15.6.1-0"]
+                 [reagent "0.7.0" :exclusions [cljsjs/react]]
+                 [reagent-utils "0.2.1"]
+                 [cljsjs/react-with-addons "15.6.1-0"]
+                 ]
 
   :plugins [[lein-cljsbuild "1.1.3"]
             [lein-ancient "0.6.12"]
