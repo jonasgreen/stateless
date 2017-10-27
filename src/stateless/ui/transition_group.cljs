@@ -5,6 +5,14 @@
             [clojure.set :as c-set]
             [bedrock.util :as ut]))
 
+
+(defn vec-insert
+  "insert elem in coll"
+  [coll pos item]
+  (if (= pos (count coll))
+    (vec (concat coll [item]))
+    (vec (concat (subvec coll 0 pos) [item] (subvec coll pos)))))
+
 (defn items-by-id-map [items]
   (reduce (fn [col {:keys [id] :as child}] (assoc col id child)) {} items))
 
@@ -16,7 +24,6 @@
   #_"
   Deleted Items are marked :_tg_deleted, but left in items to ensure transition before the are later removed.
 
-  Before investigating what items are added and deleted - _tg_deleted items are temporary removed to avoid interference.
 
   Deleted items are added to their original position in items.
 
@@ -25,13 +32,9 @@
 
   (let [old-items-by-id (items-by-id-map old-items)
         new-items-by-id (items-by-id-map new-items)
-        old-with-deleted-items-by-id (items-by-id-map (filter #(not (:_tg_deleted %)) old-items))
-        old-deleted-items-by-id (items-by-id-map (filter :_tg_deleted old-items))
-
 
         old-ids (set (keys old-items-by-id))
         new-ids (set (keys new-items-by-id))
-        old-without-deleted-ids (set (keys old-deleted-items-by-id))
 
         deleted-ids (c-set/difference old-ids new-ids)
         deleted-items (-> (select-keys old-items-by-id deleted-ids) vals)
@@ -39,13 +42,10 @@
         added-ids (c-set/difference new-ids old-ids)
         added-items (-> (select-keys new-items-by-id added-ids) vals)]
 
-
-
-    ;
-
-    {:items         nil
-     :added-items   nil
-     :deleted-items nil}))
+    {:deleted-ids   deleted-ids
+     :deleted-items deleted-items
+     :added-ids     added-ids
+     :added-items   added-items}))
 
 (defn style-it [id s]
   (if-let [node (dom/getElement (str id))]
@@ -70,27 +70,33 @@
                                        (r/next-tick #(transitions :did-appear ts @children)))
 
        :component-will-receive-props (fn [this new-argv]
+                                       (println "will-receive - new args" new-argv)
+
+                                       ; Before investigating what items are added and deleted - _tg_deleted items are temporary removed to avoid interference.
                                        (let [new-items (-> new-argv second :children-data)
-                                             old-items-by-id (items-by-id-map @children)
-                                             new-items-by-id (items-by-id-map new-items)
+                                             cm (change-model (remove-deleted @children) new-items)
+                                             {:keys [old-items added-ids deleted-ids]} cm
 
-                                             old-ids (set (keys old-items-by-id))
-                                             new-ids (set (keys new-items-by-id))
+                                             ;;update deleted mark in old-items
+                                             updated-old-items (map-indexed (fn [i {:keys [id _tg_deleted] :as item}]
+                                                                              (cond
+                                                                                (contains? added-ids id) (dissoc item :_tg_deleted)
+                                                                                (contains? deleted-ids id) (assoc item :_tg_deleted i)
+                                                                                _tg_deleted (assoc item :_tg_deleted i)
+                                                                                :else item)) old-items)
 
-                                             deleted-ids (c-set/difference old-ids new-ids)
-                                             deleted-items (-> (select-keys old-items-by-id deleted-ids) vals)
+                                             deleted-items-with-index (filter :_tg_deleted updated-old-items)
 
-                                             added-ids (c-set/difference new-ids old-ids)
-                                             ]
-
-
-                                         ;ADDED ITEMS HAVE TO BE REMOVED FROM DELETED ITEMS
-
+                                             ;insert deleted items into new-items
+                                             updated-new-items (reduce (fn [col item] (vec-insert col (:_tg_deleted item) item)) new-items deleted-items-with-index)]
 
                                          (reset! children new-items)))
 
        :component-did-update         (fn [this old-argv]
-                                       (let [old-items-by-id (items-by-id-map (-> old-argv second :children-data))
+                                       (println "did-update - new args" old-argv)
+
+                                       (let [
+                                             old-items-by-id (items-by-id-map (-> old-argv second :children-data))
                                              new-items-by-id (items-by-id-map @children)
 
                                              old-ids (set (keys old-items-by-id))
@@ -117,7 +123,7 @@
   (r/create-class
     {:component-will-receive-props (fn [this old-argv]
                                      (let [{:keys [id label top left]} (r/props this)]
-                                       (style-it id {:transition (str "left " left "ms linear, top "left "ms linear")})))
+                                       (style-it id {:transition (str "left " left "ms linear, top " left "ms linear")})))
 
      :render                       (fn [this]
                                      (let [{:keys [id label top left]} (r/props this)]
