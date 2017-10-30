@@ -9,9 +9,6 @@
             [goog.dom :as dom]))
 
 
-(def tg
-  (r/adapt-react-class js/React.addons.TransitionGroup))
-
 
 (defn content []
   [:div {:style {:padding         50
@@ -93,23 +90,21 @@
         [:div {:style {:padding-left  80
                        :padding-right 80
                        :font-size     14
-                       :position      :relative
                        :color         "rgba(174, 182, 187, 0.8)"
-                       ;:opacity       (if @menu-clicked 1 0)
+                       :opacity       (if @menu-clicked 1 0)
                        :transition    "opacity 0.3s linear"
-                       :background    :blue
                        }}
+         [:div {:style {}} "Dette er et lille firma, som ikke kan finde ud af noget. Du skal aldrig hyre os."]
+         [:div {:style {}}
+          "Forstod du hvad jeg sagde? Ingenting som vi rører ved kommer nogen sinde til at virke."
+          ]
 
 
-         [tg {:transitionName         "spawn"
-              :transitionEnterTimeout 700
-              :transitionLeaveTimeout 700
-              } (map-indexed (fn [i c] ^{:key (:id c)} [render-char c]) @text)
 
 
-          ;IDE - klikke på et bogstav - så flyver det væk....
+         ;IDE - klikke på et bogstav - så flyver det væk....
 
-          ]]
+         ]
 
         ]
 
