@@ -6,47 +6,13 @@
             [stateless.ui.contact-content :as contact-tab]
             [stateless.ui.about-content :as about-tab]
             [stateless.ui.gui :as registry]
+            [stateless.ui.menu :as menu]
             [goog.dom :as dom]))
 
 
-
-(defn content []
-  [:div {:style {:padding         50
-                 :flex-grow       1
-                 :background      :blue
-                 :display         :flex
-                 :justify-content :center
-                 :align-items     :center}}])
-
-
-
-(defn render-char [c]
-  (let [c1 (r/create-class {:component-will-receive-props (fn [this new-argv])
-                            :component-did-mount          (fn [this] (println c " did mount "))
-                            :component-did-update         (fn [this old-argv])
-                            :component-will-unmount       (fn [this])
-                            :reagent-render               (fn [{:keys [letter left top]}]
-                                                            [:div {:style {:position :fixed
-                                                                           :top      top
-                                                                           :left     left
-                                                                           ;:transition "left 0.3s linear, top 0.3s linear"
-
-                                                                           }} letter])}
-                           )]
-    (aset c1 "componentWillEnter" #(println "EEEE"))
-    c1
-
-    ))
-
-
 (defn render [_]
-  (let [menu-clicked (r/atom false)
-        text (r/atom [{:id (gensym) :letter "A" :left 0 :top 0}
-                      {:id (gensym) :letter "B" :left 20 :top 20}
-                      {:id (gensym) :letter "C" :left 30 :top 30}])]
+  (let [active-content (state/subscribe [:active-content])]
     (fn [state]
-      (style/style-node (dom/getElement "application-background") {:background (if @menu-clicked "rgba(11, 11, 11, 1)" "rgba(11, 11, 11, 1)")})
-
       [:div {:style {:height          :100vh
                      :width           :100vw
                      :display         :flex
@@ -57,7 +23,7 @@
        [:img {:src   "img/the-ocean.png"
               :style {:height     :100vh
                       :width      :100vw
-                      :opacity    (if @menu-clicked 0.05 0.17)
+                      :opacity    (if @active-content 0.05 0.17)
                       :position   :fixed
                       :top        0
                       :z-index    -1
@@ -67,49 +33,11 @@
        ;top
        [:div {:style {:flex-grow 2 :width :100%}}
         [:div {:style {:display :flex :padding 80 :padding-top 60 :font-size 14 :color "rgba(73, 78, 84, 1)"}}
-         [:div {:style {:display :flex :justify-content :space-between :align-items :center}}
-
-          [:span {:on-click (fn [] (swap! menu-clicked not)
-                              (swap! text (fn [v]
-                                            (-> (seq v)
-                                                (conj {:id (gensym) :letter "A" :left 0 :top 0})
-                                                ((fn [a] (mapv #(-> % (assoc :left (rand-int 200)) (assoc :top (rand-int 200))) a)))))))
-
-
-                  :style    (merge {:padding        2
-                                    :margin-right   40
-                                    :letter-spacing 1.5}
-
-                                   (when @menu-clicked {;:border-bottom "1px solid rgba(174, 182, 187, 1)"
-                                                        :color "rgba(174, 182, 187, 1)"
-                                                        }))
-
-                  } "ABOUT"]
-          [:span {:style {:margin-right 40 :letter-spacing 1.5}} "CONTACT"] [:span {:style {:letter-spacing 1.5}} "BAR"]]]
-
-        [:div {:style {:padding-left  80
-                       :padding-right 80
-                       :font-size     14
-                       :color         "rgba(174, 182, 187, 0.8)"
-                       :opacity       (if @menu-clicked 1 0)
-                       :transition    "opacity 0.3s linear"
-                       }}
-         [:div {:style {}} "Dette er et lille firma, som ikke kan finde ud af noget. Du skal aldrig hyre os."]
-         [:div {:style {}}
-          "Forstod du hvad jeg sagde? Ingenting som vi rører ved kommer nogen sinde til at virke."
-          ]
-
-
-
-
-         ;IDE - klikke på et bogstav - så flyver det væk....
-
-         ]
-
-        ]
+         [menu/render]]
+        [:div {} (when @active-content (:content @active-content))]]
 
        ;bottom
-       [:div {:style {:flex-grow       (if @menu-clicked 0 1)
+       [:div {:style {:flex-grow       (if @active-content 0 1)
                       :width           :100%
                       :display         :flex
                       :flex-direction  :column
@@ -117,12 +45,12 @@
                       :justify-content :center
                       :align-items     :center}}
 
-        [:div {:style {:height     (if @menu-clicked 0 80)
-                       :opacity    (if @menu-clicked 0 1)
+        [:div {:style {:height     (if @active-content 0 80)
+                       :opacity    (if @active-content 0 1)
                        :transition "opacity 0.3s ease-out, height 0.3s ease-out"
                        }}
          ;title
-         [:div {:style {:font-size       (if @menu-clicked 18 24)
+         [:div {:style {:font-size       (if @active-content 18 24)
                         :color           "rgba(174, 182, 187, 1)"
                         :display         :flex
                         :line-height     1.5
@@ -132,7 +60,7 @@
 
 
          ;sub-title
-         [:div {:style {:font-size       (if @menu-clicked 12 14)
+         [:div {:style {:font-size       (if @active-content 12 14)
                         :color           "rgba(174, 182, 187, 1)"
                         :display         :flex
                         :justify-content :space-between
@@ -145,8 +73,8 @@
 
         [:div {:style {:border-bottom-width 0               ; only border on scroll
                        :border-bottom-style :solid
-                       :border-bottom-color (if @menu-clicked "rgba(73, 78, 84, 0.2)" "transparent")
-                       :width               (if @menu-clicked :100% 0)
+                       :border-bottom-color (if @active-content "rgba(73, 78, 84, 0.2)" "transparent")
+                       :width               (if @active-content :100% 0)
                        :height              0
                        :transition          "all 0.3s ease-out"}}]
         ;contact info
@@ -155,8 +83,8 @@
                        :display     :flex
                        ;:justify-content :center
                        :align-items :center}}
-         [:div {:style {:font-size  (if @menu-clicked 12 14)
-                        :color      (if @menu-clicked "rgba(73, 78, 84, 1)" "rgba(73, 78, 84, 1)")
+         [:div {:style {:font-size  (if @active-content 12 14)
+                        :color      (if @active-content "rgba(73, 78, 84, 1)" "rgba(73, 78, 84, 1)")
                         :transition "all 0.3s ease-out"
                         }}
           "Jonas Green | jg@stateless.dk | +45 2149 7961"]]]])))

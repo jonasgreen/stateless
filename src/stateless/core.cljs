@@ -11,8 +11,8 @@
 
 (defn render [s]
   (fn [s]
-    [tg/render @s]
-    #_[application/render @s]))
+    #_[tg/render @s]
+    [application/render @s]))
 
 (defn ^:export main []
   (enable-console-print!)
