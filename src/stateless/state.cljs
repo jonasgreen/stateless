@@ -29,6 +29,6 @@
 (defn subscribe [path] (reaction (get-in @state path)))
 
 (defn toggle-content [content-id]
-  (let [{:keys [id]} (:active-content @state)]
-    (swap! state update :active-content (when-not (= id content-id)
-                                          {:id content-id :content (get content content-id (str "Content-id " content-id " is not supported"))}))))
+  (println "toogle" content-id)
+  (swap! state update :active-content #(when-not (= (:id %) content-id)
+                                         {:id content-id :content (get content content-id (str "Content-id " content-id " is not supported"))})))

@@ -3,8 +3,6 @@
             [stateless.ui.styles :as s]
             [stateless.state :as state]
             [stateless.ui.style :as style]
-            [stateless.ui.contact-content :as contact-tab]
-            [stateless.ui.about-content :as about-tab]
             [stateless.ui.gui :as registry]
             [stateless.ui.menu :as menu]
             [goog.dom :as dom]))
@@ -13,6 +11,7 @@
 (defn render [_]
   (let [active-content (state/subscribe [:active-content])]
     (fn [state]
+      (println "render active content" @active-content)
       [:div {:style {:height          :100vh
                      :width           :100vw
                      :display         :flex
@@ -34,7 +33,12 @@
        [:div {:style {:flex-grow 2 :width :100%}}
         [:div {:style {:display :flex :padding 80 :padding-top 60 :font-size 14 :color "rgba(73, 78, 84, 1)"}}
          [menu/render]]
-        [:div {} (when @active-content (:content @active-content))]]
+        [:div {:style {:position :relative
+                       :padding-left 80 :padding-right 80
+                       :max-width    700
+                       :line-height  1.8
+                       :color        "rgba(174, 182, 187, 1)"}}
+         (when @active-content (:content @active-content))]]
 
        ;bottom
        [:div {:style {:flex-grow       (if @active-content 0 1)

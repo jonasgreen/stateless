@@ -39,13 +39,13 @@ html, body {
     width: 100vw;
     height: 100vh;
     font-family: "menlo";
-    font-size: 16px;
+    font-size: 14px;
     font-stretch: normal;
     font-style: normal;
     font-weight: 400;
     line-height: 1.25;
     letter-spacing: -0.5px;
-    color: rgba(55, 71, 79, 0.8);
+    color: rgb(73, 78, 84);
     overflow: hidden;
     vertical-align: baseline;
     z-index: 0;

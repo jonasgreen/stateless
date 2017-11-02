@@ -31,7 +31,6 @@
                     (if wrd-fits-in-line?
                       (recur lines (conj line (first wds)) (rest wds))
                       (recur (conj (vec lines) line) [(first wds)] (rest wds))))))]
-
     (mapv (fn [l] {:width line-width :height line-height :words l}) lines)))
 
 (defn- mk-section [{:keys [section-width line-space] :as opts} text]
@@ -39,7 +38,6 @@
                    (map (partial mk-lines opts))
                    (reduce concat)
                    vec)]
-
     {:lines  lines
      :height (total-items-space lines :height line-space)}))
 
@@ -47,7 +45,6 @@
   (let [secs (->> (string/split text #"\n\n")
                   (map (partial mk-section opts))
                   vec)]
-
     {:sections secs
      :height   (total-items-space secs :height section-space)
      :width    section-width}))
