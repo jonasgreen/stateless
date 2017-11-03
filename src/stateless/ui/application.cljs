@@ -2,10 +2,9 @@
   (:require [reagent.core :as r]
             [stateless.ui.styles :as s]
             [stateless.state :as state]
-            [stateless.ui.style :as style]
+            [stateless.ui.dom-node :as dom-node]
             [stateless.ui.gui :as registry]
-            [stateless.ui.menu :as menu]
-            [goog.dom :as dom]))
+            [stateless.ui.menu :as menu]))
 
 
 (defn render [_]

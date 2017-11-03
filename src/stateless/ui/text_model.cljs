@@ -1,4 +1,4 @@
-(ns stateless.ui.text
+(ns stateless.ui.text-model
   (:require [clojure.string :as string]))
 
 
@@ -41,7 +41,7 @@
     {:lines  lines
      :height (total-items-space lines :height line-space)}))
 
-(defn create [{:keys [section-space section-width] :as opts} text]
+(defn mk [{:keys [section-space section-width] :as opts} text]
   (let [secs (->> (string/split text #"\n\n")
                   (map (partial mk-section opts))
                   vec)]
@@ -51,7 +51,7 @@
 
 
 (defn test-create []
-  (create {:section-space 20
+  (mk {:section-space     20
            :section-width 100
 
            :line-height   20

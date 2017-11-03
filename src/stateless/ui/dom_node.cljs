@@ -1,4 +1,5 @@
-(ns stateless.ui.style)
+(ns stateless.ui.dom-node
+  (:require [goog.dom :as dom]))
 
 
 ;; Constants used in components
@@ -32,21 +33,18 @@
 
 (defn convert-key [k] (name k))
 
-(defn- style [style style-map]
+(defn- style-node! [dom-node style-map]
   (doseq [[k v] style-map]
-    (aset style (convert-key k) (convert-value k v))))
+    (aset (aget dom-node "style") (convert-key k) (convert-value k v))))
 
-(defn style-current-target [event style-map]
-  (style (.. event -currentTarget -style) style-map))
+(defn get-dom-node [id]
+  (if (instance? js/object id) id (dom/getElement (str id))))
 
-(defn un-style-current-target [event style-map]
-  (style (.. event -currentTarget -style) (reduce (fn [m [k v]] (assoc m k "")) {} style-map)))
+(defn style!
+  "Node must be either a dom-id or a dom-node"
+  [dom-target style-map]
+  (let [node (get-dom-node dom-target)]
+    (if node
+      (style-node! node style-map)
+      (.warn js/console (str "Unable to style dom-node with id: " dom-target ". Dom-node does not exist.")))))
 
-(defn- prepend-style-into-opts [opts style]
-  (assoc opts :style (merge style (:style opts))))
-
-(defn- prepend-into-opts [opts & styles]
-  (merge-with merge {:style (apply merge styles)} opts))
-
-(defn style-node [node style-map]
-  (style (aget node "style") style-map))

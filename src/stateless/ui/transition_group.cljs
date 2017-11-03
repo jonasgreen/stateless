@@ -2,8 +2,7 @@
   (:require-macros [cljs.core.async.macros :refer [go]])
   (:require [cljs.core.async :refer [<! >!] :as a]
             [reagent.core :as r]
-            [goog.dom :as dom]
-            [stateless.ui.style :as style]
+            [stateless.ui.dom-node :as dom-node]
             [clojure.set :as c-set]
             [bedrock.util :as ut]))
 
@@ -17,10 +16,6 @@
 
 (defn items-by-id-map [items]
   (reduce (fn [col {:keys [id] :as child}] (assoc col id child)) {} items))
-
-
-(defn remove-deleted [items]
-  (filter :_tg_deleted items))
 
 (defn change-model [old-items new-items]
   (let [old-items-by-id (items-by-id-map old-items)
@@ -40,17 +35,10 @@
      :added-ids     added-ids
      :added-items   added-items}))
 
-(defn style-it [id s]
-  (if-let [node (dom/getElement (str id))]
-    (style/style-node node s)
-    (println "No dom-node for aaaaID:" id)))
-
 (defn transitions [life-cycle transition-styles children]
   (if-let [get-style (get transition-styles life-cycle)]
-    (let [do-style (fn [c] (if-let [node (dom/getElement (str (:id c)))]
-                             (style/style-node node (get-style c))
-                             (println "No dom-node found for id: " (:id c))))]
-      (mapv do-style children))
+    (println "getstyle" get-style)
+    (mapv (fn [c] (dom-node/style! (:id c) (get-style c))) children)
     (println "No transition-style found for life-cycle:" life-cycle)))
 
 (defn tg [{:keys [children-data child-factory enter-timeout leave-timeout transition-styles] :as input}]
@@ -68,7 +56,6 @@
                                              old-items (:children-data (r/props this))
                                              {:keys [added-ids deleted-ids]} (change-model old-items new-items)
 
-                                             _ (println "add-ids" added-ids)
                                              ;;update deleted mark in children
                                              updated-children (map-indexed (fn [i {:keys [id _tg_deleted] :as item}]
                                                                              (cond
@@ -81,10 +68,6 @@
 
                                              ;insert deleted items into new-items - keep index as good as possible
                                              updated-children (reduce (fn [col item] (vec-insert col (:_tg_deleted item) item)) new-items deleted-children)]
-
-                                         (println "updated children" (map :id updated-children))
-
-
                                          (reset! children updated-children)))
 
        :component-did-update         (fn [this old-argv]
@@ -114,66 +97,3 @@
                                         (map (fn [{:keys [id] :as c}] ^{:key (str id)} [child-factory c]) @children)])})))
 
 
-(defn child [{:keys [on-delete]} _]
-  (r/create-class
-    {:component-will-receive-props (fn [this old-argv]
-                                     (let [{:keys [id label top left]} (r/props this)]
-                                       (style-it id {:transition (str "left " left "ms linear, top " left "ms linear")})))
-
-     :render                       (fn [this]
-                                     (println "props" (r/props this))
-                                     (let [{:keys [id label top left]} (r/props this)]
-                                       [:div {:id       (str id)
-                                              :on-click #(on-delete id)
-                                              :style    {:display         :flex
-                                                         :align-items     :center
-                                                         :justify-content :center
-                                                         :position        :absolute
-                                                         :top             top
-                                                         :left            left
-                                                         :background      :red
-                                                         :font-size       10 :border-radius 40 :height 40 :width 40}} id]))}))
-
-(defn transition-styles [enter-timeout leave-timeout]
-  {:will-appear (fn [child-data] {:opacity 0})
-   :did-appear  (fn [child-data] {:opacity    1
-                                  :transition "opacity 1s linear, left 1s linear, top 1s linear"})
-   :will-enter  (fn [child-data] {:opacity    0
-                                  :left       0
-                                  :background :blue})
-   :did-enter   (fn [child-data] {:opacity    1
-                                  :left       (:left child-data)
-                                  :background :red
-                                  :transition "opacity 1s linear, left 1s linear, top 1s linear, background 1s ease-in"})
-   :will-leave  (fn [child-data] )
-   :did-leave   (fn [child-data] {:opacity    0
-                                  :border-radius 0
-                                  :width 0
-                                  :height 0
-                                  :font-size 0
-                                  :background :blue
-
-                                  :transition "font-size 1s linear, opacity 1s linear, width 1s linear, height 1s linear, border-radius 1s linear, background 1s ease-in"})})
-
-(defn create-model [label]
-  {:id (gensym) :label label :left 500 :top 100}
-  )
-
-(defn render [_]
-  (let [children (r/atom [{:id (gensym) :label "A" :left 300 :top 100} {:id (gensym) :label "B" :left 500 :top 100}])]
-    (fn []
-      (println "children" @children)
-      [:div
-       [:div {:on-click (fn []
-
-                          (swap! children #(mapv (fn [cs] (assoc cs :left (rand-int 1000) :top (rand-int 200))) %))
-                          (swap! children conj (create-model "B")))
-              :style    {:border "1px solid black"}} "BUTTON"]
-
-       [tg {:enter-timeout     300
-            :leave-timeout     300
-            :children-data     @children
-            :child-factory     (partial child {:on-delete (fn [id]
-                                                            (println "on-delete")
-                                                            (reset! children (remove (fn [c] (= id (:id c))) @children)))})
-            :transition-styles transition-styles}]])))
