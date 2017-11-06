@@ -2,6 +2,7 @@
   (:require [reagent.core :as r]
             [airboss.core :as airboss]
             [stateless.ui.application :as application]
+            [stateless.ui.animated-balls :as balls]
             [stateless.ui.transition-group :as tg]
             [stateless.state :as state]))
 
@@ -11,7 +12,7 @@
 
 (defn render [s]
   (fn [s]
-    #_[tg/render @s]
+    #_[balls/render @s]
     [application/render @s]))
 
 (defn ^:export main []

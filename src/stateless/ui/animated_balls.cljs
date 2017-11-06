@@ -4,16 +4,16 @@
     [stateless.ui.transition-group :as transition-group]
     [reagent.core :as r]))
 
-(defn ball [{:keys [on-delete]} _]
+(defn ball [on-delete]
   (r/create-class
     {:component-will-receive-props (fn [this old-argv]
-                                     (let [{:keys [id label top left]} (r/props this)]
-                                       (dom-node/style! id {:transition (str "left " left "ms linear, top " left "ms linear")})))
+                                     (let [{:keys [dom-id label top left]} (r/props this)]
+                                       (dom-node/style! dom-id {:transition (str "left " left "ms linear, top " left "ms linear")})))
 
      :render                       (fn [this]
-                                     (let [{:keys [id label top left]} (r/props this)]
-                                       [:div {:id       (str id)
-                                              :on-click #(on-delete id)
+                                     (let [{:keys [dom-id label top left] :as input} (r/props this)]
+                                       [:div {:id       (str dom-id)
+                                              :on-click #(on-delete dom-id)
                                               :style    {:display         :flex
                                                          :align-items     :center
                                                          :justify-content :center
@@ -21,7 +21,7 @@
                                                          :top             top
                                                          :left            left
                                                          :background      :red
-                                                         :font-size       10 :border-radius 40 :height 40 :width 40}} id]))}))
+                                                         :font-size       10 :border-radius 40 :height 40 :width 40}} dom-id]))}))
 
 (defn transition-styles [enter-timeout leave-timeout]
   {:will-appear (fn [child-data] {:opacity 0})
@@ -44,10 +44,12 @@
                                   :transition    "font-size 1s linear, opacity 1s linear, width 1s linear, height 1s linear, border-radius 1s linear, background 1s ease-in"})})
 
 (defn create-model [label]
-  {:id (gensym) :label label :left 500 :top 100})
+  {:dom-id (gensym) :label label :left 500 :top 100})
 
 (defn render [_]
-  (let [children (r/atom [{:id (gensym) :label "A" :left 300 :top 100} {:id (gensym) :label "B" :left 500 :top 100}])]
+  (let [children (r/atom [{:dom-id (gensym) :label "A" :left 300 :top 100} {:dom-id (gensym) :label "B" :left 500 :top 100}])
+        delete-child (fn [dom-id] (reset! children (remove (fn [c] (= dom-id (:dom-id c))) @children)))
+        child-factory (ball delete-child)]
     (fn []
       [:div
        [:div {:on-click (fn []
@@ -59,6 +61,5 @@
        [transition-group/tg {:enter-timeout     300
                              :leave-timeout     300
                              :children-data     @children
-                             :child-factory     (partial ball {:on-delete (fn [id]
-                                                                            (reset! children (remove (fn [c] (= id (:id c))) @children)))})
+                             :child-factory     child-factory
                              :transition-styles transition-styles}]])))

@@ -9,13 +9,12 @@
 (defn vec-insert
   "insert elem in coll"
   [coll pos item]
-  (println "type in insert" (type coll))
   (if (= pos (count coll))
     (vec (concat coll [item]))
     (vec (concat (subvec coll 0 pos) [item] (subvec coll pos)))))
 
 (defn items-by-id-map [items]
-  (reduce (fn [col {:keys [id] :as child}] (assoc col id child)) {} items))
+  (reduce (fn [col {:keys [dom-id] :as child}] (assoc col dom-id child)) {} items))
 
 (defn change-model [old-items new-items]
   (let [old-items-by-id (items-by-id-map old-items)
@@ -36,10 +35,8 @@
      :added-items   added-items}))
 
 (defn transitions [life-cycle transition-styles children]
-  (if-let [get-style (get transition-styles life-cycle)]
-    (println "getstyle" get-style)
-    (mapv (fn [c] (dom-node/style! (:id c) (get-style c))) children)
-    (println "No transition-style found for life-cycle:" life-cycle)))
+  (when-let [get-style (get transition-styles life-cycle)]
+    (mapv (fn [c] (dom-node/style! (:dom-id c) (get-style c))) children)))
 
 (defn tg [{:keys [children-data child-factory enter-timeout leave-timeout transition-styles] :as input}]
   (let [children (r/atom children-data)
@@ -57,10 +54,10 @@
                                              {:keys [added-ids deleted-ids]} (change-model old-items new-items)
 
                                              ;;update deleted mark in children
-                                             updated-children (map-indexed (fn [i {:keys [id _tg_deleted] :as item}]
+                                             updated-children (map-indexed (fn [i {:keys [dom-id _tg_deleted] :as item}]
                                                                              (cond
-                                                                               (contains? added-ids id) (dissoc item :_tg_deleted)
-                                                                               (contains? deleted-ids id) (assoc item :_tg_deleted i)
+                                                                               (contains? added-ids dom-id) (dissoc item :_tg_deleted)
+                                                                               (contains? deleted-ids dom-id) (assoc item :_tg_deleted i)
                                                                                _tg_deleted (assoc item :_tg_deleted i)
                                                                                :else item)) @children)
 
@@ -73,7 +70,7 @@
        :component-did-update         (fn [this old-argv]
                                        (let [{:keys [added-items]} (change-model (-> old-argv second :children-data) (:children-data (r/props this)))
                                              deleted-items (filter :_tg_deleted @children)
-                                             deleted-items-set (set (map :id deleted-items))]
+                                             deleted-items-set (set (map :dom-id deleted-items))]
 
                                          (when (seq deleted-items)
                                            (go
@@ -83,10 +80,10 @@
 
                                              (let [fresh-deleted-ids (->> @children
                                                                           (filter :_tg_deleted)
-                                                                          (map :id)
+                                                                          (map :dom-id)
                                                                           set
                                                                           (c-set/intersection deleted-items-set))]
-                                               (reset! children (remove #(contains? fresh-deleted-ids (:id %)) @children)))))
+                                               (reset! children (remove #(contains? fresh-deleted-ids (:dom-id %)) @children)))))
 
                                          (transitions :will-enter ts added-items)
                                          (r/next-tick #(transitions :did-enter ts added-items))))
@@ -94,6 +91,6 @@
 
        :render                       (fn [this]
                                        [:div {:style {:position :relative}}
-                                        (map (fn [{:keys [id] :as c}] ^{:key (str id)} [child-factory c]) @children)])})))
+                                        (map (fn [{:keys [dom-id] :as c}] ^{:key (str dom-id)} [child-factory c]) @children)])})))
 
 

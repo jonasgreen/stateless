@@ -31,20 +31,22 @@
     (keyword? v) (name v)
     :else v))
 
-(defn convert-key [k] (name k))
+(defn convert-key [k]
+  (name k))
 
 (defn- style-node! [dom-node style-map]
   (doseq [[k v] style-map]
     (aset (aget dom-node "style") (convert-key k) (convert-value k v))))
 
 (defn get-dom-node [id]
-  (if (instance? js/object id) id (dom/getElement (str id))))
+  (if (or (string? id) (symbol? id))
+    (dom/getElement (str id))
+    id))
 
 (defn style!
-  "Node must be either a dom-id or a dom-node"
+  "Node must be either a dom-id (string or symbol) or a dom-node"
   [dom-target style-map]
-  (let [node (get-dom-node dom-target)]
-    (if node
-      (style-node! node style-map)
-      (.warn js/console (str "Unable to style dom-node with id: " dom-target ". Dom-node does not exist.")))))
+  (if-let [node (get-dom-node dom-target)]
+    (style-node! node style-map)
+    (.warn js/console (str "Unable to style dom-node with id: " dom-target ". Dom-node does not exist."))))
 
