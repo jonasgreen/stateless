@@ -27,7 +27,7 @@
 
 (defn convert-value [k v]
   (cond
-    (and (int? v) (not (contains? none-pixel-styles k))) (str v "px")
+    (and (number? v) (not (contains? none-pixel-styles k))) (str v "px")
     (keyword? v) (name v)
     :else v))
 

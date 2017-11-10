@@ -3,6 +3,7 @@
             [stateless.ui.styles :as s]
             [stateless.state :as state]
             [stateless.ui.dom-node :as dom-node]
+            [stateless.ui.text-render :as text-render]
             [stateless.ui.gui :as registry]
             [stateless.ui.menu :as menu]))
 
@@ -10,7 +11,6 @@
 (defn render [_]
   (let [active-content (state/subscribe [:active-content])]
     (fn [state]
-      (println "render active content" @active-content)
       [:div {:style {:height          :100vh
                      :width           :100vw
                      :display         :flex
@@ -29,15 +29,18 @@
                       }}]
 
        ;top
-       [:div {:style {:flex-grow 2 :width :100%}}
+       [:div {:style {:display :flex :flex-direction :column :flex-grow 1 :width :100%}}
         [:div {:style {:display :flex :padding 80 :padding-top 60 :font-size 14 :color "rgba(73, 78, 84, 1)"}}
          [menu/render]]
-        [:div {:style {:position :relative
-                       :padding-left 80 :padding-right 80
-                       :max-width    700
-                       :line-height  1.8
-                       :color        "rgba(174, 182, 187, 1)"}}
-         (when @active-content (:content @active-content))]]
+        (when @active-content
+          [:div {:style {:flex-grow    1
+                         :height       :100%
+                         :position     :relative
+                         :overflow-y   :auto
+                         :padding-left 80 :padding-right 80
+                         :line-height  1.8
+                         :color        "rgba(174, 182, 187, 1)"}}
+           [text-render/render (:content @active-content)]])]
 
        ;bottom
        [:div {:style {:flex-grow       (if @active-content 0 1)

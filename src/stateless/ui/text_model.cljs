@@ -5,7 +5,7 @@
 (defn- total-items-space [items item-space-fn space-between-items]
   (->> items
        (map item-space-fn)
-       (reduce + (* space-between-items (- (count items) -1)))))
+       (reduce + (* space-between-items (- (count items) 1)))))
 
 
 (defn- mk-word [{:keys [char-width char-height word-height] :as opts} text]
@@ -26,7 +26,7 @@
                 (if-not (seq wds)
                   (->> (conj lines line) (remove (comp not seq)))
                   (let [wrd-fits-in-line? (<
-                                            (+ (:width (first wds)) (total-items-space line :height char-width))
+                                            (+ (:width (first wds)) (total-items-space line :width char-width))
                                             line-width)]
                     (if wrd-fits-in-line?
                       (recur lines (conj line (first wds)) (rest wds))
@@ -39,10 +39,11 @@
                    (reduce concat)
                    vec)]
     {:lines  lines
+     :width section-width
      :height (total-items-space lines :height line-space)}))
 
 (defn mk [{:keys [section-space section-width] :as opts} text]
-  (let [secs (->> (string/split text #"\n\n")
+  (let [secs (->> (string/split text #"\r")
                   (map (partial mk-section opts))
                   vec)]
     {:sections secs

@@ -1,5 +1,6 @@
 (ns stateless.ui.styles)
 
+(def page-width 500)
 
 (def row-height 30)
 

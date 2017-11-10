@@ -38,7 +38,7 @@
   (when-let [get-style (get transition-styles life-cycle)]
     (mapv (fn [c] (dom-node/style! (:dom-id c) (get-style c))) children)))
 
-(defn tg [{:keys [children-data child-factory enter-timeout leave-timeout transition-styles] :as input}]
+(defn tg [{:keys [children-data comp-style child-factory enter-timeout leave-timeout transition-styles] :as input}]
   (let [children (r/atom children-data)
         ts (transition-styles enter-timeout leave-timeout)]
 
@@ -90,7 +90,7 @@
 
 
        :render                       (fn [this]
-                                       [:div {:style {:position :relative}}
+                                       [:div {:style (merge comp-style {:position :relative})}
                                         (map (fn [{:keys [dom-id] :as c}] ^{:key (str dom-id)} [child-factory c]) @children)])})))
 
 
