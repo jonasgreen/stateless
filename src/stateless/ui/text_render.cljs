@@ -73,9 +73,18 @@
 (defn render-character [_]
   (let [hover (r/atom false)]
     (r/create-class
-      {:component-will-receive-props (fn [this old-argv]
-                                       (let [{:keys [dom-id top left]} (r/props this)]
-                                         (dom-node/style! dom-id {:transition (str "left " 800 "ms linear, top " 800 "ms linear")})))
+      {:component-will-receive-props (fn [this new-argv]
+                                       (let [{:keys [dom-id content top left _tg_deleted] :as m} (second new-argv)
+                                             old-left (:left (r/props this))
+                                             old-top (:top (r/props this))
+                                             speed-px-pr-s 300
+                                             distance (.sqrt js/Math (+ (.pow js/Math (- left old-left) 2) (.pow js/Math (- top old-top) 2)))
+                                             time (/ distance speed-px-pr-s)
+                                             ]
+                                         (when-not (= 0 distance)
+                                           (dom-node/style! dom-id (merge {:transition (str "left " time "s ease-in 0.5s, top " time "s ease-out 0.5s")}
+                                                                          #_(when-not _tg_deleted {:opacity 0.5})
+                                                                          )))))
 
        :render                       (fn [this]
                                        (let [{:keys [dom-id content height width top left] :as input} (r/props this)]
@@ -116,10 +125,13 @@
 (defn transition-styles [enter-timeout leave-timeout]
   {:will-appear (fn [child-data] {})
    :did-appear  (fn [child-data] {:transition "left 1s ease-in, top 1s ease-in"})
-   :will-enter  (fn [child-data] {})
-   :did-enter   (fn [child-data] {:transition "left 1s ease-in, 1s ease-in"})
-   :will-leave  (fn [child-data] {:opacity 0})
-   :did-leave   (fn [child-data] {})})
+   :will-enter  (fn [child-data] {:opacity 0
+                                  })
+   :did-enter   (fn [child-data] {:opacity    1
+                                  :transition "all 0.3s ease-out 1.0s"})
+   :will-leave  (fn [child-data] {})
+   :did-leave   (fn [child-data] {:opacity    0
+                                  :transition "opacity 0.3s ease-out"})})
 
 
 
@@ -151,6 +163,7 @@
                                          [:div {:style {:position :relative
                                                         :height   height
                                                         :width    width}}
+                                          (println "width" width "height" height)
 
                                           [transition-group/tg {:enter-timeout     300
                                                                 :leave-timeout     300
