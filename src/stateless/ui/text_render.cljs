@@ -129,9 +129,9 @@
                                   })
    :did-enter   (fn [child-data] {:opacity    1
                                   :transition "all 0.3s ease-out 1.0s"})
-   :will-leave  (fn [child-data] {})
+   :will-leave  (fn [child-data] {:color "rgba(141, 5, 9, 1)"})
    :did-leave   (fn [child-data] {:opacity    0
-                                  :transition "opacity 0.3s ease-out"})})
+                                  :transition "opacity 0.5s ease-out"})})
 
 
 
