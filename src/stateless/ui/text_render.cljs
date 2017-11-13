@@ -82,7 +82,7 @@
                                              time (/ distance speed-px-pr-s)
                                              ]
                                          (when-not (= 0 distance)
-                                           (dom-node/style! dom-id (merge {:transition (str "left " time "s ease-in 0.5s, top " time "s ease-out 0.5s")}
+                                           (dom-node/style! dom-id (merge {:transition (str "left " time "s ease-in 1s, top " time "s ease-out 1s")}
                                                                           #_(when-not _tg_deleted {:opacity 0.5})
                                                                           )))))
 
@@ -125,13 +125,17 @@
 (defn transition-styles [enter-timeout leave-timeout]
   {:will-appear (fn [child-data] {})
    :did-appear  (fn [child-data] {:transition "left 1s ease-in, top 1s ease-in"})
-   :will-enter  (fn [child-data] {:opacity 0
-                                  })
+
+   :will-enter  (fn [child-data] {:opacity 0})
    :did-enter   (fn [child-data] {:opacity    1
-                                  :transition "all 0.3s ease-out 1.0s"})
-   :will-leave  (fn [child-data] {:color "rgba(141, 5, 9, 1)"})
-   :did-leave   (fn [child-data] {:opacity    0
-                                  :transition "opacity 0.5s ease-out"})})
+                                  :color "rgba(174, 182, 187, 1)"
+                                  :transition "opacity 0.6s ease-out 1.5s, color 0.5s linear 2s"})
+
+   :will-leave  (fn [child-data] {})
+   :did-leave   (fn [child-data] {:opacity 0
+                                  :height 0
+                                  :top (+ (:top child-data) (/ (:height child-data) 2))
+                                  :transition "height 300ms linear, top 300ms linear"})})
 
 
 
@@ -163,7 +167,6 @@
                                          [:div {:style {:position :relative
                                                         :height   height
                                                         :width    width}}
-                                          (println "width" width "height" height)
 
                                           [transition-group/tg {:enter-timeout     300
                                                                 :leave-timeout     300

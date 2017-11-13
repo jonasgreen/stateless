@@ -76,7 +76,7 @@
                                            (go
                                              (transitions :will-leave ts deleted-items)
                                              (r/next-tick #(transitions :did-leave ts deleted-items))
-                                             (<! (a/timeout 2000))
+                                             (<! (a/timeout leave-timeout))
 
                                              (let [fresh-deleted-ids (->> @children
                                                                           (filter :_tg_deleted)

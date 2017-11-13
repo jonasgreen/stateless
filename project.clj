@@ -3,7 +3,6 @@
   :dependencies [[org.clojure/clojure "1.8.0"]
                  [org.clojure/clojurescript "1.9.946"]
                  [noencore "0.3.3"]
-                 [cljsjs/react-with-addons "15.6.1-0"]
                  [reagent "0.7.0"]
                  [reagent-utils "0.2.1"]
                  ]
@@ -43,7 +42,7 @@
                                        :source-map    "resources/public/js/compiled/deploy.js.map"
                                        :language-in   :ecmascript5 ;; Mute warnings re: promesa outputting non-ES3 compliant javascript
                                        :language-out  :ecmascript5
-                                       :optimizations :advanced}}
+                                       :optimizations :simple}}
 
                        {:id           "test"
                         :source-paths ["test"]
