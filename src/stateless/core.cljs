@@ -18,9 +18,7 @@
 (defn ^:export main []
   (enable-console-print!)
 
-  (println "innerwidth: " (aget js/window "innerWidth"))
-  (println "screenwidth: " (aget js/screen "width"))
-
+  (state/window-size-changed (.-innerHeight js/window))
 
   (r/render [render state/state] (js/document.getElementById "application"))
 

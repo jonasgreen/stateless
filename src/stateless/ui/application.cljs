@@ -5,6 +5,8 @@
             [stateless.ui.dom-node :as dom-node]
             [stateless.ui.text-render :as text-render]
             [stateless.ui.gui :as registry]
+            [stateless.ui.easter-egg :as easter-egg]
+            [stateless.ui.fancy-placeholder :as fancy-placeholder]
             [stateless.ui.menu :as menu]))
 
 
@@ -18,6 +20,8 @@
                      :align-items     :center
                      :justify-content :center}}
 
+       [easter-egg/render]
+
        [:img {:src   "img/the-ocean.png"
               :style {:height     :100vh
                       :width      :100vw
@@ -27,6 +31,7 @@
                       :z-index    -1
                       :transition "opacity 1.5s ease-out"
                       }}]
+       [fancy-placeholder/render]
 
        ;top
        [:div {:style {:display :flex :flex-direction :column :flex-grow 1 :width :100%}}

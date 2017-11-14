@@ -2,6 +2,8 @@
   (:require [stateless.ui.text-model :as text-model]
             [bedrock.util :as ut]
             [reagent.core :as r]
+            [stateless.state :as state]
+            [goog.dom :as dom-helper]
             [stateless.ui.transition-group :as transition-group]
             [stateless.ui.dom-node :as dom-node]))
 
@@ -91,11 +93,22 @@
                                          [:div {:id            (str dom-id)
                                                 :on-mouse-over #(reset! hover true)
                                                 :on-mouse-out  #(reset! hover false)
-                                                :style         {:position :absolute
-                                                                :left     left
-                                                                :top      top
-                                                                :height   height
-                                                                :width    width}}
+                                                :on-click      #(when-let [letter (state/easter-egg-toggable? content)]
+                                                                  (-> (.-body js/document)
+                                                                      (.appendChild (dom-helper/createElement "div")))
+
+                                                                  (state/toggle-easter-egg-letter content))
+                                                :style         (merge {:position :absolute
+                                                                       :left     left
+                                                                       :top      top
+                                                                       :height   height
+                                                                       :width    width}
+                                                                      (when (and @hover
+                                                                                 (and
+                                                                                   (contains? (set (keys (:easter-egg-enablers @state/state))) content)
+                                                                                   (state/easter-egg-toggable? content)))
+                                                                        {:cursor :pointer
+                                                                         :color  "rgba(141,5,9,1)"}))}
                                           content]))})))
 
 
@@ -123,19 +136,21 @@
 
 
 (defn transition-styles [enter-timeout leave-timeout]
-  {:will-appear (fn [child-data] {})
-   :did-appear  (fn [child-data] {:transition "left 1s ease-in, top 1s ease-in"})
+  {:will-appear (fn [child-data] {:opacity 0})
+   :did-appear  (fn [child-data] {:opacity 1
+                                  :transition "opacity 300ms ease-in, left 1s ease-in, top 1s ease-in"})
 
    :will-enter  (fn [child-data] {:opacity 0})
    :did-enter   (fn [child-data] {:opacity    1
-                                  :color "rgba(174, 182, 187, 1)"
+                                  :color      "rgba(174, 182, 187, 1)"
                                   :transition "opacity 0.6s ease-out 1.5s, color 0.5s linear 2s"})
 
    :will-leave  (fn [child-data] {})
-   :did-leave   (fn [child-data] {:opacity 0
-                                  :height 0
-                                  :top (+ (:top child-data) (/ (:height child-data) 2))
-                                  :transition "height 300ms linear, top 300ms linear"})})
+   :did-leave   (fn [child-data] {:top        (rand-int 200)
+                                  :left       (+ (rand-int 600) 600)
+                                  :font-size  0
+                                  :opacity    0.3
+                                  :transition (str "font-size " (rand-int leave-timeout) "ms ease-in, opacity " leave-timeout "ms ease-in, left " leave-timeout "ms ease-in, top " leave-timeout "ms ease-out")})})
 
 
 
@@ -169,7 +184,7 @@
                                                         :width    width}}
 
                                           [transition-group/tg {:enter-timeout     300
-                                                                :leave-timeout     300
+                                                                :leave-timeout     1000
                                                                 :children-data     characters
                                                                 :child-factory     render-character
                                                                 :transition-styles transition-styles}]]))})))

@@ -12,7 +12,8 @@
                                 :margin-right   40
                                 :letter-spacing 1.5
                                 :cursor         :pointer
-                                :user-select    :none}
+                                :user-select    :none
+                                }
                                (when (= (:id @active-tab) id) {:color "rgba(174, 182, 187, 1)"}))}
        (name id)])))
 
