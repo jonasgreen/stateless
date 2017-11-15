@@ -79,12 +79,12 @@
                                        (let [{:keys [dom-id content top left _tg_deleted] :as m} (second new-argv)
                                              old-left (:left (r/props this))
                                              old-top (:top (r/props this))
-                                             speed-px-pr-s 300
+                                             speed-px-pr-s 200
                                              distance (.sqrt js/Math (+ (.pow js/Math (- left old-left) 2) (.pow js/Math (- top old-top) 2)))
                                              time (/ distance speed-px-pr-s)
                                              ]
                                          (when-not (= 0 distance)
-                                           (dom-node/style! dom-id (merge {:transition (str "left " time "s ease-in 1s, top " time "s ease-out 1s")}
+                                           (dom-node/style! dom-id (merge {:transition (str "left " time "s ease-in 0.5s, top " time "s ease-out 0.5s")}
                                                                           #_(when-not _tg_deleted {:opacity 0.5})
                                                                           )))))
 
@@ -97,6 +97,7 @@
                                                                   (state/toggle-easter-egg-letter content))
                                                 :style         {:position :absolute
                                                                 :left     left
+                                                                :user-select :none
                                                                 :top      top
                                                                 :height   height
                                                                 :width    width}}
@@ -127,14 +128,26 @@
 
 
 (defn transition-styles [enter-timeout leave-timeout]
-  {:will-appear (fn [child-data] {:opacity 0})
-   :did-appear  (fn [child-data] {:opacity    1
-                                  :transition "opacity 300ms ease-in, left 1s ease-in, top 1s ease-in"})
+  {:will-appear (fn [child-data] {:opacity 0.3
+                                  :font-size 0
+                                  :top        (rand-int 200)
+                                  :left       (- (rand-int 600) 600)})
+   :did-appear  (fn [child-data] {:font-size  14
+                                  :top        (:top child-data)
+                                  :left       (:left child-data)
+                                  :opacity    1
+                                  :transition (str "font-size " (rand-int leave-timeout) "ms ease-out, opacity " leave-timeout "ms ease-out, left " (+ leave-timeout (rand-int leave-timeout)) "ms ease-out, top " (+ leave-timeout (rand-int leave-timeout)) "ms ease-in")})
 
-   :will-enter  (fn [child-data] {:opacity 0})
-   :did-enter   (fn [child-data] {:opacity    1
-                                  :color      "rgba(174, 182, 187, 1)"
-                                  :transition "opacity 0.6s ease-out 1.5s, color 0.5s linear 2s"})
+   :will-enter  (fn [child-data] {:opacity 0.3
+                                  :font-size 0
+                                  :top        (rand-int 200)
+                                  :left       (- (rand-int 600) 600)
+                                  })
+   :did-enter   (fn [child-data] {:font-size  14
+                                  :top        (:top child-data)
+                                  :left       (:left child-data)
+                                  :opacity    1
+                                  :transition (str "font-size " (rand-int leave-timeout) "ms ease-out 1s, opacity " leave-timeout "ms ease-out 1s, left " (+ leave-timeout (rand-int leave-timeout)) "ms ease-out 1s, top " (+ leave-timeout (rand-int leave-timeout)) "ms ease-in 1s")})
 
    :will-leave  (fn [child-data] {})
    :did-leave   (fn [child-data] {:top        (rand-int 200)
@@ -170,8 +183,7 @@
                                        (update-state state-atom (second new-argv)))
        :render                       (fn [this]
                                        (let [{:keys [height width characters dom-id-depot]} @state-atom]
-                                         [:div {:style {:position :relative
-                                                        :height   height
+                                         [:div {:style {:height   height
                                                         :width    width}}
 
                                           [transition-group/tg {:enter-timeout     300

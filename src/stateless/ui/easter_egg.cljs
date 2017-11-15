@@ -75,7 +75,7 @@
                        :height     :100vh
                        :width      :100vw
                        :overflow-y (if easter-realeased :auto :none)
-                       :background (if easter-realeased "rgba(141, 5, 9, 1)" "transparent")
+                       :background (if easter-realeased "rgba(137, 7, 14, 1)" "transparent")
                        :z-index    (if easter-realeased 10000000000 -20)
                        :transition "background 500ms ease-in"}}
          (if easter-realeased
