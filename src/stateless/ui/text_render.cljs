@@ -94,21 +94,12 @@
                                                 :on-mouse-over #(reset! hover true)
                                                 :on-mouse-out  #(reset! hover false)
                                                 :on-click      #(when-let [letter (state/easter-egg-toggable? content)]
-                                                                  (-> (.-body js/document)
-                                                                      (.appendChild (dom-helper/createElement "div")))
-
                                                                   (state/toggle-easter-egg-letter content))
-                                                :style         (merge {:position :absolute
-                                                                       :left     left
-                                                                       :top      top
-                                                                       :height   height
-                                                                       :width    width}
-                                                                      (when (and @hover
-                                                                                 (and
-                                                                                   (contains? (set (keys (:easter-egg-enablers @state/state))) content)
-                                                                                   (state/easter-egg-toggable? content)))
-                                                                        {:cursor :pointer
-                                                                         :color  "rgba(141,5,9,1)"}))}
+                                                :style         {:position :absolute
+                                                                :left     left
+                                                                :top      top
+                                                                :height   height
+                                                                :width    width}}
                                           content]))})))
 
 
@@ -137,7 +128,7 @@
 
 (defn transition-styles [enter-timeout leave-timeout]
   {:will-appear (fn [child-data] {:opacity 0})
-   :did-appear  (fn [child-data] {:opacity 1
+   :did-appear  (fn [child-data] {:opacity    1
                                   :transition "opacity 300ms ease-in, left 1s ease-in, top 1s ease-in"})
 
    :will-enter  (fn [child-data] {:opacity 0})

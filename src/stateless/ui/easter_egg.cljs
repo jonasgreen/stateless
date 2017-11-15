@@ -85,7 +85,7 @@
                                                  :style    {:position   :fixed
                                                             :right      (if show right (- font-size))
                                                             :top        top
-                                                            :color      (if enabled "rgba(141, 5, 9, 1)" "transparent")
+                                                            :color      (if enabled "rgba(137, 7, 14, 1)" "transparent")
                                                             :font-size  font-size
                                                             :transition "opacity 300ms ease-in, color 300ms ease-in"
                                                             }} (when content (clojure.string/upper-case content))])
