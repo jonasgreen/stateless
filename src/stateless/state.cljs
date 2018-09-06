@@ -38,7 +38,7 @@
                   "
               })
 
-(defonce content-order [:about :philosophy :contact :bar])
+(defonce content-order [:about :philosophy :bar :contact])
 
 (def easter-egg-enablers {"s" {:max 3 :active 0}
                           "t" {:max 2 :active 0}

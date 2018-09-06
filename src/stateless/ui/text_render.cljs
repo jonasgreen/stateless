@@ -79,12 +79,12 @@
                                        (let [{:keys [dom-id content top left _tg_deleted] :as m} (second new-argv)
                                              old-left (:left (r/props this))
                                              old-top (:top (r/props this))
-                                             speed-px-pr-s 200
+                                             speed-px-pr-s 400
                                              distance (.sqrt js/Math (+ (.pow js/Math (- left old-left) 2) (.pow js/Math (- top old-top) 2)))
                                              time (/ distance speed-px-pr-s)
                                              ]
                                          (when-not (= 0 distance)
-                                           (dom-node/style! dom-id (merge {:transition (str "left " time "s ease-in 0.5s, top " time "s ease-out 0.5s")}
+                                           (dom-node/style! dom-id (merge {:transition (str "left " time "s ease-in 0.3s, top " time "s ease-out 0.3s")}
                                                                           #_(when-not _tg_deleted {:opacity 0.5})
                                                                           )))))
 
@@ -128,6 +128,7 @@
 
 
 (defn transition-styles [enter-timeout leave-timeout]
+  (let [leave-timeout (/ leave-timeout 1)]
   {:will-appear (fn [child-data] {:opacity 0.3
                                   :font-size 0
                                   :top        (rand-int 200)
@@ -147,14 +148,14 @@
                                   :top        (:top child-data)
                                   :left       (:left child-data)
                                   :opacity    1
-                                  :transition (str "font-size " (rand-int leave-timeout) "ms ease-out 1s, opacity " leave-timeout "ms ease-out 1s, left " (+ leave-timeout (rand-int leave-timeout)) "ms ease-out 1s, top " (+ leave-timeout (rand-int leave-timeout)) "ms ease-in 1s")})
+                                  :transition (str "font-size " (rand-int leave-timeout) "ms ease-out, opacity " leave-timeout "ms ease-out, left " (+ leave-timeout (rand-int leave-timeout)) "ms ease-out, top " (+ leave-timeout (rand-int leave-timeout)) "ms ease-in")})
 
    :will-leave  (fn [child-data] {})
    :did-leave   (fn [child-data] {:top        (rand-int 200)
                                   :left       (+ (rand-int 600) 600)
                                   :font-size  0
                                   :opacity    0.3
-                                  :transition (str "font-size " (rand-int leave-timeout) "ms ease-in, opacity " leave-timeout "ms ease-in, left " leave-timeout "ms ease-in, top " leave-timeout "ms ease-out")})})
+                                  :transition (str "font-size " (rand-int leave-timeout) "ms ease-in, opacity " leave-timeout "ms ease-in, left " leave-timeout "ms ease-in, top " leave-timeout "ms ease-out")})}))
 
 
 
@@ -187,7 +188,7 @@
                                                         :width    width}}
 
                                           [transition-group/tg {:enter-timeout     300
-                                                                :leave-timeout     1000
+                                                                :leave-timeout     400
                                                                 :children-data     characters
                                                                 :child-factory     render-character
                                                                 :transition-styles transition-styles}]]))})))

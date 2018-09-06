@@ -45,7 +45,8 @@ html, body {
     font-weight: 400;
     line-height: 1.25;
     letter-spacing: -0.5px;
-    color: rgb(73, 78, 84);
+    color: rgba(73, 86, 79, 1.000);
+    text-rendering: optimizeSpeed;
     overflow: hidden;
     vertical-align: baseline;
     z-index: 0;

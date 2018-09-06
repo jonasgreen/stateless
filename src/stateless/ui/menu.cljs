@@ -17,11 +17,13 @@
                                              :border-bottom "1px solid transparent"
                                              :user-select    :none
                                              :opacity 0.4
-                                             :font-size      12
+                                             :font-size      14
                                              :transition "opacity 100ms ease-in, border-color 100ms ease-in"}
                                             (when (= (:id @active-tab) id) {:opacity 1
                                                               ;              :border-bottom "1px solid rgba(73, 78, 84, .6)"
-                                                                            }))}
+                                                                            })
+
+                                            )}
                     (name id)]))
             (ut/add-reagent-keys))
        ])))
